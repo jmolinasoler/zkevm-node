@@ -35,15 +35,15 @@ GENERATE_DOC_TEMPLATES_PATH = "docs/config-file/templates/"
 check-go:
 	@which go > /dev/null || (echo "Error: Go is not installed" && exit 1)
 
-# Check for Docker
-.PHONY: check-docker
-check-docker:
-	@which docker > /dev/null || (echo "Error: docker is not installed" && exit 1)
+# Check for Podman
+.PHONY: check-podman
+check-podman:
+	@which podman > /dev/null || (echo "Error: podman is not installed" && exit 1)
 
-# Check for Docker-compose
-.PHONY: check-docker-compose
-check-docker-compose:
-	@which docker-compose > /dev/null || (echo "Error: docker-compose is not installed" && exit 1)
+# Check for Podman-compose
+.PHONY: check-podman-compose
+check-podman-compose:
+	@which podman-compose > /dev/null || (echo "Error: podman-compose is not installed" && exit 1)
 
 # Check for Protoc
 .PHONY: check-protoc
@@ -63,10 +63,10 @@ check-curl:
 # Targets that require the checks
 build: check-go
 lint: check-go
-build-docker: check-docker
-build-docker-nc: check-docker
-run-rpc: check-docker check-docker-compose
-stop: check-docker check-docker-compose
+build-podman: check-podman
+build-podman-nc: check-podman
+run-rpc: check-podman check-podman-compose
+stop: check-podman check-podman-compose
 install-linter: check-go check-curl
 install-config-doc-gen: check-python
 config-doc-node: check-go check-python
@@ -78,27 +78,27 @@ generate-code-from-proto: check-protoc
 build: ## Builds the binary locally into ./dist
 	$(GOENVVARS) go build -ldflags "all=$(LDFLAGS)" -o $(GOBIN)/$(GOBINARY) $(GOCMD)
 
-.PHONY: build-docker
-build-docker: ## Builds a docker image with the node binary
-	docker build -t zkevm-node -f ./Dockerfile .
+.PHONY: build-podman
+build-podman: ## Builds a podman image with the node binary
+	podman build -t zkevm-node -f ./Dockerfile .
 
-.PHONY: build-docker-nc
-build-docker-nc: ## Builds a docker image with the node binary - but without build cache
-	docker build --no-cache=true -t zkevm-node -f ./Dockerfile .
+.PHONY: build-podman-nc
+build-podman-nc: ## Builds a podman image with the node binary - but without build cache
+	podman build --no-cache=true -t zkevm-node -f ./Dockerfile .
 
 .PHONY: run-rpc
 run-rpc: ## Runs all the services needed to run a local zkEVM RPC node
-	docker-compose up -d zkevm-state-db zkevm-pool-db
+	podman-compose up -d zkevm-state-db zkevm-pool-db
 	sleep 2
-	docker-compose up -d zkevm-prover
+	podman-compose up -d zkevm-prover
 	sleep 5
-	docker-compose up -d zkevm-sync
+	podman-compose up -d zkevm-sync
 	sleep 2
-	docker-compose up -d zkevm-rpc
+	podman-compose up -d zkevm-rpc
 
 .PHONY: stop
 stop: ## Stops all services
-	docker-compose down
+	podman-compose down
 
 .PHONY: install-linter
 install-linter: ## Installs the linter
