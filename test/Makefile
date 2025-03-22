@@ -1,4 +1,4 @@
-DOCKERCOMPOSE := docker compose -f docker-compose.yml 
+DOCKERCOMPOSE := podman compose -f docker-compose.yml 
 DOCKERCOMPOSEAPPSEQ := zkevm-sequencer
 DOCKERCOMPOSEAPPSEQV1TOV2 := zkevm-sequencer-v1tov2
 DOCKERCOMPOSEAPPSEQSENDER := zkevm-sequence-sender
@@ -49,7 +49,7 @@ RUNSYNC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPSYNC)
 RUNV1TOV2SYNC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPSYNCV1TOV2)
 RUNETHTXMANAGER := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPETHTXMANAGER)
 RUNV1TOV2ETHTXMANAGER := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPETHTXMANAGERV1TOV2)
-RUNGRAFANA := DOCKERGID=`stat -c '%g' /var/run/docker.sock` $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEGRAFANA)
+RUNGRAFANA := DOCKERGID=`stat -c '%g' /var/run/podman.sock` $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEGRAFANA)
 
 RUNL1NETWORK := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSENETWORK)
 RUNV1TOV2L1NETWORK := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEV1TOV2NETWORK)
@@ -120,8 +120,8 @@ test-full-non-e2e: stop ## Runs non-e2e tests checking race conditions
 	sleep 7
 	$(RUNL1NETWORK)
 	sleep 15
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -short -race -p 1 -covermode=atomic -coverprofile=../coverage.out  -coverpkg ./... -timeout 200s ../...
 
 .PHONY: test-full-non-e2e-sonar
@@ -134,8 +134,8 @@ test-full-non-e2e-sonar: stop ## Runs non-e2e tests checking race conditions
 	sleep 7
 	$(RUNL1NETWORK)
 	sleep 15
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -short -race -p 1 -covermode=atomic -coverprofile=../coverage.out  -coverpkg ./... -timeout 200s ../... -json > ../report.json
 
 
@@ -146,8 +146,8 @@ test-e2e-group-1: stop ## Runs group 1 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 600s ../ci/e2e-group1/...
 
 .PHONY: test-e2e-group-2
@@ -157,8 +157,8 @@ test-e2e-group-2: stop ## Runs group 2 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 600s ../ci/e2e-group2/...
 
 .PHONY: test-e2e-group-3
@@ -168,8 +168,8 @@ test-e2e-group-3: stop ## Runs group 3 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 600s ../ci/e2e-group3/...
 
 .PHONY: test-e2e-group-4
@@ -179,8 +179,8 @@ test-e2e-group-4: stop ## Runs group 4 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 600s ../ci/e2e-group4/...
 
 .PHONY: test-e2e-group-5
@@ -190,8 +190,8 @@ test-e2e-group-5: stop ## Runs group 5 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 1200s ../ci/e2e-group5/...
 
 .PHONY: test-e2e-group-6
@@ -201,8 +201,8 @@ test-e2e-group-6: stop ## Runs group 6 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 600s ../ci/e2e-group6/...
 
 .PHONY: test-e2e-group-7
@@ -212,8 +212,8 @@ test-e2e-group-7: stop ## Runs group 7 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 720s ../ci/e2e-group7/...
 
 .PHONY: test-e2e-group-8
@@ -223,8 +223,8 @@ test-e2e-group-8: stop ## Runs group 8 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 1200s ../ci/e2e-group8/...
 
 
@@ -235,8 +235,8 @@ test-e2e-group-9: stop ## Runs group 9 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 2000s ../ci/e2e-group9/...
 
 
@@ -247,8 +247,8 @@ test-e2e-group-10: stop ## Runs group 10 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 2000s ../ci/e2e-group10/...
 
 
@@ -259,8 +259,8 @@ test-e2e-group-11: stop ## Runs group 11 e2e tests checking race conditions
 	$(RUNEVENTDB)
 	sleep 5
 	$(RUNZKPROVER)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	trap '$(STOP)' EXIT; MallocNanoZone=0 go test -count=1 -failfast -race -v -p 1 -timeout 2000s ../ci/e2e-group11/...
 
 .PHONY: benchmark-sequencer-eth-transfers
@@ -275,8 +275,8 @@ benchmark-sequencer-eth-transfers: stop
 	sleep 2
 	$(RUNL2GASPRICER)
 	$(RUNJSONRPC)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	@ cd benchmarks/sequencer/e2e/eth-transfers ; \
  	mkdir -p results ; \
  	touch ./results/out.dat ; \
@@ -294,8 +294,8 @@ benchmark-sequencer-erc20-transfers: stop
 	sleep 2
 	$(RUNL2GASPRICER)
 	$(RUNJSONRPC)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	@ cd benchmarks/sequencer/e2e/erc20-transfers ; \
  	mkdir -p results ; \
  	touch ./results/out.dat ; \
@@ -314,8 +314,8 @@ benchmark-sequencer-uniswap-transfers: stop
 	sleep 2
 	$(RUNL2GASPRICER)
 	$(RUNJSONRPC)
-	docker ps -a
-	docker logs $(DOCKERCOMPOSEZKPROVER)
+	podman ps -a
+	podman logs $(DOCKERCOMPOSEZKPROVER)
 	@ cd benchmarks/sequencer/e2e/uniswap-transfers ; \
  	mkdir -p results ; \
  	touch ./results/out.dat ; \
@@ -622,8 +622,8 @@ stop: ## Stops all services
 	$(STOP)
 
 .PHONY: ship
-ship: ## Builds docker images and run them
-	cd .. && make build-docker && cd ./test && make run
+ship: ## Builds podman images and run them
+	cd .. && make build-podman && cd ./test && make run
 
 .PHONY: reship
 reship: stop ship ## Executes `make stop` and `make sail` commands
@@ -644,7 +644,7 @@ init-network: ## Initializes the network
 	go run ./scripts/init_network/main.go .
 
 .PHONY: show-logs
-show-logs:  ## Show logs for running docker 
+show-logs:  ## Show logs for running podman 
 	$(DOCKERCOMPOSE) logs
 
 .PHONY: deploy-sc
